@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-
+import ReactDOM from 'react-dom/client';
+import './index.css'; // Add a basic CSS file to the project
 // Main App component for the HVAC dashboard
 const App = () => {
   // State to hold all the sensor data
@@ -17,7 +18,6 @@ const App = () => {
       staticPressure: 0.0,
     },
   });
-
   // A function to simulate new data from the sensors
   // In a real-world scenario, this would be replaced with a call to your physical device
   const fetchSensorData = () => {
@@ -29,17 +29,14 @@ const App = () => {
       dischargeTemp: (Math.random() * 15 + 120).toFixed(1), // 120-135°F
       suctionTemp: (Math.random() * 5 + 40).toFixed(1), // 40-45°F
     };
-
     const newIndoorData = {
       indoorBlowerAmps: (Math.random() * 1.5 + 2).toFixed(2), // 2-3.5 Amps
       supplyTemp: (Math.random() * 5 + 50).toFixed(1), // To calculate delta T
       returnTemp: (Math.random() * 5 + 70).toFixed(1), // To calculate delta T
       staticPressure: (Math.random() * 0.2 + 0.3).toFixed(2), // 0.3-0.5 InH2O
     };
-
     // Calculate Delta T
     const deltaT = (newIndoorData.returnTemp - newIndoorData.supplyTemp).toFixed(1);
-
     // Update the state with the new simulated data
     setHvacData({
       outdoor: newOutdoorData,
@@ -49,13 +46,11 @@ const App = () => {
       },
     });
   };
-
   // Use useEffect to fetch data every 2 seconds, mimicking real-time updates
   useEffect(() => {
     const interval = setInterval(fetchSensorData, 2000); // Poll for data every 2 seconds
     return () => clearInterval(interval); // Cleanup function to clear the interval
   }, []);
-
   // Helper component to render a single data point
   const DataPoint = ({ label, value, unit }) => (
     <div className="flex flex-col items-center p-4 m-2 bg-white/10 backdrop-blur-sm rounded-xl shadow-lg">
@@ -66,7 +61,6 @@ const App = () => {
       </span>
     </div>
   );
-
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 p-8 flex items-center justify-center font-sans">
       <div className="max-w-4xl w-full bg-gray-800 p-8 rounded-3xl shadow-2xl">
@@ -78,7 +72,6 @@ const App = () => {
             Real-time diagnostics for your home's comfort system.
           </p>
         </header>
-
         {/* Outdoor Unit Section */}
         <section className="mb-8">
           <h2 className="text-2xl font-bold text-white mb-4 flex items-center">
@@ -95,7 +88,6 @@ const App = () => {
             <DataPoint label="Suction Temp" value={hvacData.outdoor.suctionTemp} unit="°F" />
           </div>
         </section>
-
         {/* Indoor Unit Section */}
         <section>
           <h2 className="text-2xl font-bold text-white mb-4 flex items-center">
@@ -110,7 +102,6 @@ const App = () => {
             <DataPoint label="Static Pressure" value={hvacData.indoor.staticPressure} unit=" inH₂O" />
           </div>
         </section>
-
         <footer className="mt-10 text-center text-gray-500">
           <p className="text-sm">Data refreshes every 2 seconds.</p>
         </footer>
@@ -118,5 +109,10 @@ const App = () => {
     </div>
   );
 };
-
 export default App;
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
